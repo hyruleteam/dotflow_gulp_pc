@@ -33,13 +33,11 @@ gulp.task('browser-sync', () => {
 //html
 gulp.task('buildHtml', () => {
     return watch(`${devPath}/html/**/*.html`, () => {
-        gulp.src([`${devPath}/html/**/*.html`, `!${devPath}/html/include/*.html`])
+        gulp
+            .src([`${devPath}/html/**/*.html`, `!${devPath}/html/include/*.html`])
             .pipe(plumber())
-            .pipe(changed(`${distPath}/html`, { hasChanged: changed.compareContents }))
-            .pipe(fileinclude({
-                prefix: '@@',
-                basepath: '@file'
-            }))
+            .pipe(changed(`${distPath}/html`, {hasChanged: changed.compareContents}))
+            .pipe(fileinclude({prefix: '@@', basepath: '@file'}))
             .pipe(gulp.dest(`${distPath}/html`))
             .pipe(browserSync.stream());
     })
@@ -48,10 +46,16 @@ gulp.task('buildHtml', () => {
 //style
 gulp.task('buildStyle', () => {
     return watch(`${devPath}/sass/**/*.scss`, () => {
-        gulp.src(`${devPath}/sass/*.scss`)
+        gulp
+            .src(`${devPath}/sass/*.scss`)
             .pipe(plumber())
-            .pipe(changed(`${distPath}/css`, { hasChanged: changed.compareContents, extension: '.css' }))
+            .pipe(sourcemaps.init())
+            .pipe(changed(`${distPath}/css`, {
+                hasChanged: changed.compareContents,
+                extension: '.css'
+            }))
             .pipe(sass().on('error', sass.logError))
+            .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(`${distPath}/css`))
             .pipe(browserSync.stream()); //browserSync:只监听sass编译之后的css
     })
@@ -60,17 +64,17 @@ gulp.task('buildStyle', () => {
 //js
 gulp.task('buildJs', () => {
     const pageJs = watch(`${devPath}/js/pages/**/*.js`, () => {
-        gulp.src([`${devPath}/js/pages/**/*.js`])
+        gulp
+            .src([`${devPath}/js/pages/**/*.js`])
             .pipe(plumber())
-            .pipe(changed(`${distPath}/js/pages/`, {
-                hasChanged: changed.compareContents
-            }))
+            .pipe(changed(`${distPath}/js/pages/`, {hasChanged: changed.compareContents}))
             .pipe(gulp.dest(`${distPath}/js/pages/`))
             .pipe(browserSync.stream());
     })
 
     const vendorJs = watch(`${devPath}/js/vendor/**/*`, () => {
-        gulp.src([`${devPath}/js/vendor/**/*`])
+        gulp
+            .src([`${devPath}/js/vendor/**/*`])
             .pipe(plumber())
             .pipe(gulp.dest(`${distPath}/js/vendor/`))
             .pipe(browserSync.stream());
@@ -82,7 +86,8 @@ gulp.task('buildJs', () => {
 //images
 gulp.task('buildImage', () => {
     return watch(`${devPath}/img/**/*`, () => {
-        gulp.src([`${devPath}/img/**/*`])
+        gulp
+            .src([`${devPath}/img/**/*`])
             .pipe(plumber())
             .pipe(gulp.dest(`${distPath}/img`))
             .pipe(browserSync.stream())
@@ -92,7 +97,8 @@ gulp.task('buildImage', () => {
 //font
 gulp.task('buildFont', () => {
     return watch(`${devPath}/font/**/*`, () => {
-        gulp.src([`${devPath}/font/**/*`])
+        gulp
+            .src([`${devPath}/font/**/*`])
             .pipe(plumber())
             .pipe(gulp.dest(`${distPath}/font/`))
             .pipe(browserSync.stream())
@@ -112,23 +118,28 @@ const spritesMithConfig = {
 }
 
 gulp.task('buildSprite', () => {
-    const spriteData =
-        gulp.src(`${devPath}/images/sprites/${argv.name}/*`)
+    const spriteData = gulp
+        .src(`${devPath}/images/sprites/${argv.name}/*`)
         .pipe(plumber())
         .pipe(spritesmith(spritesMithConfig));
 
-    spriteData.img.pipe(gulp.dest(`${devPath}/images/sprite`));
-    spriteData.img.pipe(gulp.dest(`${distPath}/images/sprite`));
-    spriteData.css.pipe(gulp.dest(`${devPath}/sass/module/icon`));
+    spriteData
+        .img
+        .pipe(gulp.dest(`${devPath}/images/sprite`));
+    spriteData
+        .img
+        .pipe(gulp.dest(`${distPath}/images/sprite`));
+    spriteData
+        .css
+        .pipe(gulp.dest(`${devPath}/sass/module/icon`));
 });
 
 //clean
 gulp.task('buildClean', () => {
-    return gulp.src([`${distPath}`])
+    return gulp
+        .src([`${distPath}`])
         .pipe(plumber())
-        .pipe(clean({
-            force: true
-        }))
+        .pipe(clean({force: true}))
 });
 
 //devPack
@@ -136,17 +147,16 @@ gulp.task('devPack', ['buildStyle', 'buildHtml', 'buildJs', 'buildImage', 'build
 
 //buildPack
 gulp.task('buildAssets', () => {
-    const html = gulp.src([`${devPath}/html/**/*.html`, `!${devPath}/html/include/*.html`])
+    const html = gulp
+        .src([`${devPath}/html/**/*.html`, `!${devPath}/html/include/*.html`])
         .pipe(plumber())
-        .pipe(changed(`${distPath}/html`, { hasChanged: changed.compareContents }))
-        .pipe(fileinclude({
-            prefix: '@@',
-            basepath: '@file'
-        }))
+        .pipe(changed(`${distPath}/html`, {hasChanged: changed.compareContents}))
+        .pipe(fileinclude({prefix: '@@', basepath: '@file'}))
         .pipe(gulp.dest(`${distPath}/html`))
         .pipe(browserSync.stream());
 
-    const styles = gulp.src([`${devPath}/sass/*.scss`])
+    const styles = gulp
+        .src([`${devPath}/sass/*.scss`])
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
@@ -156,28 +166,32 @@ gulp.task('buildAssets', () => {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(`${distPath}/css`))
 
-    const pagejs = gulp.src(`${devPath}/js/**/*.js`)
+    const pagejs = gulp
+        .src(`${devPath}/js/**/*.js`)
         .pipe(plumber())
         .pipe(uglify())
         .pipe(gulp.dest(`${distPath}/js`));
 
-    const vendorJs = gulp.src([`${devPath}/js/vendor/**/*`])
+    const vendorJs = gulp
+        .src([`${devPath}/js/vendor/**/*`])
         .pipe(plumber())
         .pipe(gulp.dest(`${distPath}/js/vendor/`))
 
-    const fonts = gulp.src([`${devPath}/font/**/*`])
+    const fonts = gulp
+        .src([`${devPath}/font/**/*`])
         .pipe(plumber())
         .pipe(gulp.dest(`${distPath}/font/`))
 
-
-    const images = gulp.src([`${devPath}/images/**/*`, `!${devPath}/images/sprites/**/*`])
+    const images = gulp
+        .src([`${devPath}/images/**/*`, `!${devPath}/images/sprites/**/*`])
         .pipe(gulp.dest(`${distPath}/images`))
 
     return merge(styles, pagejs, vendorJs, fonts, images, html);
 });
 
 gulp.task('buildRevPack', ['buildAssets'], () => {
-    const styles = gulp.src([`${distPath}/css/*.css`])
+    const styles = gulp
+        .src([`${distPath}/css/*.css`])
         .pipe(plumber())
         .pipe(autoprefixer({
             browsers: ['last 2 versions', 'last 2 Explorer versions', '> 5%']
@@ -191,9 +205,10 @@ gulp.task('buildRevPack', ['buildAssets'], () => {
     return merge(styles);
 })
 
-gulp.task('default', ['buildAssets', 'devPack', 'browser-sync'], () => {
-    gulp.watch([
-            `${distPath}/**/*.+(css|js|png|jpg|ttf|html)`
-        ])
+gulp.task('default', [
+    'buildAssets', 'devPack', 'browser-sync'
+], () => {
+    gulp
+        .watch([`${distPath}/**/*.+(css|js|png|jpg|ttf|html)`])
         .on('change', browserSync.reload);
 });
