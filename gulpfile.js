@@ -11,7 +11,7 @@ const plumber = require('gulp-plumber');
 const changed = require('gulp-changed');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
-const fileinclude = require('gulp-file-include');
+const fileinclude =   require('gulp-file-include');
 
 //编译路径
 const devPath = './src';

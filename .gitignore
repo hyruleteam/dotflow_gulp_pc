@@ -1,9 +1,46 @@
+# Logs
+Logs
+*.log
+npm-debug.log*
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directory
 node_modules
-dist/css
-dist/html
-dist/devhtml
-dist/js
-export
-coverage
-npm-debug.log
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# VSCODE
+.vscode
+
+# JETBRAIN
+.idea
+
+# static
+static
+
+# dist
+dist
+
+.DS_Store/*
 .DS_Store
+
+# Yarn
+yarn.lock
+yarn-error.log
+
+src/config/*
+!src/config/index.js
+!src/config/default.js.idea
+
+package-lock.json
+
+dump.rdb
